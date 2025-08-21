@@ -70,7 +70,7 @@ switch ($choice) {
     "1" {
         Install-Software `
           -Name "AutoCAD 2024" `
-          -Url "https://github.com/SurveyRoyal/AUTOCADDOWLOAD/releases/download/V2024/AutoCAD_2024_setup.exe" `
+          -Url "https://github.com/SurveyRoyal/AUTOCADDOWLOAD/releases/download/V2024/Offline_Help_for_AutoCAD_2024_English.exe" `
           -Installer "autocad2024.exe" `
           -InstallArgs "/S"
     }
