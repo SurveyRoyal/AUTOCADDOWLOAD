@@ -12,15 +12,16 @@ function Install-Software {
     try {
         Invoke-WebRequest -Uri $Url -OutFile $Path -UseBasicParsing -ErrorAction Stop
         if ((Get-Item $Path).Length -lt 10MB) {
-            throw "File tải về quá nhỏ hoặc link không hợp lệ!"
+            throw "File tai ve qua nho hoac link khong hop le!"
         }
-        Write-Host ">>> Tải xong $Name"
-        Write-Host ">>> Đang cài đặt..."
+        Write-Host ">>> Tai xong $Name"
+        Write-Host ">>> Dang cai dat..."
         Start-Process -FilePath $Path -ArgumentList $InstallArgs -Wait
-        Write-Host ">>> Hoàn tất cài đặt $Name`n"
+        Write-Host ">>> Hoan tat cai dat $Name`n"
     }
     catch {
-        Write-Host "❌ Lỗi khi cài đặt $Name: $($_.Exception.Message)"
+        $errMsg = $_.Exception.Message
+        Write-Host "Loi khi cai dat $Name : $errMsg"
     }
     finally {
         if (Test-Path $Path) { Remove-Item $Path -Force }
@@ -33,22 +34,23 @@ function Fix-Software {
         [string]$TargetPath
     )
 
-    Write-Host "`n=== Đang tải bản Fix… ==="
+    Write-Host "`n=== Dang tai ban Fix ==="
     $FixPath = "$env:TEMP\fix_acad.exe"
 
     try {
         Invoke-WebRequest -Uri $FixUrl -OutFile $FixPath -UseBasicParsing -ErrorAction Stop
         if ((Get-Item $FixPath).Length -lt 1MB) {
-            throw "File Fix tải về quá nhỏ hoặc link không hợp lệ!"
+            throw "File Fix tai ve qua nho hoac link khong hop le!"
         }
-        Write-Host ">>> Fix tải xong: $FixPath"
+        Write-Host ">>> Fix tai xong: $FixPath"
 
-        Write-Host ">>> Đang copy vào thư mục đích: $TargetPath"
+        Write-Host ">>> Dang copy vao thu muc dich: $TargetPath"
         robocopy (Split-Path $FixPath -Parent) $TargetPath /e /w:5 /r:2 /COPY:DATSOU /DCOPY:DAT /MT
-        Write-Host ">>> Hoàn thành Fix—file đã được copy sang $TargetPath`n"
+        Write-Host ">>> Hoan thanh Fix - file da duoc copy sang $TargetPath`n"
     }
     catch {
-        Write-Host "❌ Lỗi khi thực hiện Fix: $($_.Exception.Message)"
+        $errMsg = $_.Exception.Message
+        Write-Host "Loi khi thuc hien Fix: $errMsg"
     }
     finally {
         if (Test-Path $FixPath) { Remove-Item $FixPath -Force }
@@ -58,11 +60,11 @@ function Fix-Software {
 # ======== MENU ========
 Clear-Host
 Write-Host "===== MENU CAI DAT & FIX AutoCAD 2024 ====="
-Write-Host "1. Cài AutoCAD 2024"
+Write-Host "1. Cai AutoCAD 2024"
 Write-Host "2. Fix"
-Write-Host "3. Thoát"
+Write-Host "3. Thoat"
 
-$choice = Read-Host "Chọn (1-3)"
+$choice = Read-Host "Chon (1-3)"
 
 switch ($choice) {
     "1" {
@@ -77,6 +79,6 @@ switch ($choice) {
           -FixUrl "https://github.com/SurveyRoyal/AUTOCADDOWLOAD/releases/download/FIX24/acad.exe" `
           -TargetPath "C:\Program Files\Autodesk\AutoCAD 2024"
     }
-    "3" { Write-Host "Thoát chương trình..."; break }
-    Default { Write-Host "Lựa chọn không hợp lệ. Vui lòng thử lại!" }
+    "3" { Write-Host "Thoat chuong trinh..."; break }
+    Default { Write-Host "Lua chon khong hop le. Vui long thu lai!" }
 }
